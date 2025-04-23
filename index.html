@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Maintenance - Bet9ja</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles - Bet9ja Dark Theme */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Dark background for the whole page */
+            background-color: #1a202c; /* gray-900 */
+            color: #e2e8f0; /* gray-200 - Default light text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            overflow-x: hidden;
+        }
+        .card-container {
+            perspective: 1000px;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            min-height: 150px;
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 1.5rem auto;
+        }
+        .card {
+            width: 90px;
+            height: 140px;
+            cursor: pointer;
+            position: absolute;
+            background-color: transparent;
+            border: none;
+            transition: transform 0.4s ease-in-out; /* Shuffle transition */
+            transform-style: preserve-3d;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s; /* Flip transition */
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Slightly darker shadow */
+            border-radius: 8px;
+        }
+        /* Flip the inner container when .is-flipped is added to .card */
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden; /* Hide the back side of the face */
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Slightly lighter border for dark theme */
+            border: 2px solid #4a5568; /* gray-700 */
+        }
+
+        .card-front {
+            /* Front face holds the icon (ball or X) */
+            /* Darker background when revealed */
+            background-color: #2d3748; /* gray-800 */
+            color: #e2e8f0; /* gray-200 */
+            /* Front face starts rotated away */
+            transform: rotateY(180deg);
+        }
+
+        .card-back {
+            /* --- Card Back SVG Logo --- */
+            /* Darker grey background */
+            background-color: #4a5568; /* gray-700 */
+            /* Use the provided SVG encoded as a Data URI */
+            background-image: url("data:image/svg+xml,%3Csvg width='963' height='310' viewBox='0 0 963 310' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_22_197)'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M962.5 127.8C961 137.1 959.8 146.4 958.1 155.6C953.7 179 948.6 202.3 944.9 225.8C943.5 234.9 944.8 244.5 945.5 253.9C945.9 259.6 946.4 259.5 940.8 259.5C922.7 259.5 904.5 259.4 886.4 259.6C883 259.6 881.5 258.8 881.1 255.2C880 245.7 879.8 245.7 871.8 250.8C853.7 262.3 834.5 267.9 813 263.2C791.1 258.4 776.8 240.6 778.8 220C780.8 199.8 791.1 184.5 807.2 172.7C818.4 164.5 831 159.6 844.1 155.2C859.3 150.2 874.4 144.7 889.2 138.8C903.7 133 906.6 119.4 903.8 107C903 103.2 900.3 100.5 896.5 99.4C887.2 96.8 875.4 98.8 873 108.7C872.4 111.2 872.4 114 872.9 116.5C874.4 124.5 873.4 127.2 865.7 130.3C856.4 134 847.1 137.8 836.7 136.1C828.4 134.7 822.4 130.2 818.4 123C811.4 110.3 810 96.9 813 82.8C813.4 81.1 813.7 79.3 816 80.7C827.7 88 840.6 85.6 853 84.8C866.3 84 879.5 81.1 892.8 80C908.9 78.7 924.9 80.2 940.2 85.6C953.9 90.4 960.1 100.8 961.6 114.7C961.8 116.4 962.2 118.2 962.5 119.9C962.5 122.5 962.5 125.1 962.5 127.8ZM896.1 154.6C890.5 157 885.4 158.5 881.1 161.2C866.6 170.3 855.3 182.6 847 197.5C842.7 205.2 841.2 213.5 842.2 222.2C843.5 233.8 853.8 241.5 863.6 237.5C874.4 233.1 883.7 226.7 884.7 213.4C884.9 211.1 885.6 208.8 886 206.5C889.3 189.7 892.6 172.9 896.1 154.6Z' fill='%2332AA4C'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M685.6 308.9C685.3 308.9 685.1 308.8 684.8 308.8C681.5 308.3 678.2 307.4 675 306.5C675 306.5 676.3 305.1 676.5 305C689.3 295.3 695.6 281.9 698.7 266.6C708 220.5 717.1 174.4 726.3 128.2C727.2 123.9 727.9 119.5 728.9 115.2C731.4 105.3 730.8 95.8 726.2 86.4C724 81.9 724.3 81.7 729.3 81.7C749.3 81.7 769.4 81.8 789.4 81.6C792.5 81.6 793.3 82.1 792.7 85.5C785.9 119.7 779.4 153.9 772.7 188.1C767.3 215.9 761.7 243.8 756.5 271.7C754.5 282.5 748.7 290.6 739.6 296.5C727.3 304.4 712.2 308.6 697.6 309.3C693.7 309.5 689.6 309.4 685.6 308.9Z' fill='%2332AA4C'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M194.6 179.8C191.2 187.7 187.3 198.5 181.9 208.5C171.5 227.7 157.5 243.5 137.2 252.8C127.7 257.1 117.7 259.6 107.3 259.6C72.5 259.7 37.7 259.7 2.9 259.7C2 259.7 1.2 259.6 0 259.5C0.4 258.4 0.6 257.3 1.1 256.6C10.2 243 13.8 227.5 16.9 211.6C27.4 157.3 38.4 103.2 49.3 49C50.9 40.9 49.6 33.2 47.5 25.5C46.7 22.7 47.1 21.9 50.1 21.9C70.4 22 90.8 22 111.1 21.9C113.8 21.9 114.2 22.7 113.7 25.3C108.9 49.3 104.3 73.4 99.5 97.9C102.6 96 105.7 94 108.7 92.2C119.9 85.6 131.7 80 145 79.4C173 78.1 191.9 92.8 198.2 120.2C200.9 132 200.6 143.9 199.2 156.9C201.3 151.5 202.7 147 204.6 142.7C221.8 105.6 250.7 84.5 291.2 79.3C309.8 76.9 328 78 345.1 86.5C362.6 95.2 375.5 108 378.2 128.3C380 141.5 378.7 154.8 375.8 167.8C375.2 170.6 373.2 170.4 371.2 170.4C337.6 170.5 304 170.6 270.4 170.5C266.4 170.5 264.9 171.5 264.2 175.6C261.6 190.5 258.1 205.3 259.2 220.7C260.4 237.2 270.1 246.9 286.7 247.5C309.8 248.4 327 236.4 332.3 215.9C334.1 209 333.9 202.1 330.9 195.6C329.8 193.1 330.4 192 332.8 191.7C337.3 191.1 341.9 189.7 346.2 190.4C358.3 192.1 364.2 202.4 361.6 215.6C358.8 229.7 350.5 239.8 338.8 247.3C319.6 259.6 298.5 265 275.8 263.9C261.3 263.2 247 261.4 233.7 255.3C208.9 244.1 196 224.7 194.8 197.6C194.4 190.6 194.6 183.8 194.6 179.8ZM137.2 133.2C136 127.6 135.3 121.9 133.5 116.6C131.6 110.9 127 108.2 120.9 108.1C113.3 108 107.7 111.7 102.9 117C95.9 124.7 91.8 134 89.5 144C87 154.9 85 165.9 82.9 176.8C78.8 197.9 74.7 218.9 70.6 240C70.3 241.6 69.7 242.9 72.2 242.8C77 242.6 82.2 243.4 86.7 242.1C103.7 237.2 115.8 226.5 121.4 209.3C124.1 200.9 126 192.3 128 183.7C131.7 167.1 135.8 150.6 137.2 133.2ZM291.2 154.3C297.4 154.3 303.6 154.2 309.7 154.4C312.5 154.5 313.9 154 314.3 150.8C315 145.4 316.7 140.2 317.4 134.8C318.6 125.1 320.2 115.3 320.1 105.6C320.1 97.3 313.8 92.4 305.3 92.5C294.6 92.6 287.1 98.4 282.5 107.4C275.5 121.1 271.8 135.9 268.9 150.9C268.4 153.7 269.4 154.4 272.1 154.4C278.6 154.2 284.9 154.3 291.2 154.3Z' fill='%23D21E20'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M620.1 15.7C642.5 16 665 20.6 683.9 36.1C703 51.8 713.7 72.2 715.7 96.9C719.5 142.8 697.4 214.4 634.9 248C612.8 259.8 589.2 264.6 564.3 264.3C545.7 264.1 527.6 261.3 510.4 254.1C504.5 251.6 498.7 248.4 493.7 244.4C480.3 233.6 479.7 215.7 491.7 202.7C509.5 183.6 545 184.1 562.4 203.7C565 206.7 565.6 208.4 561.8 211C554.3 216.2 549.5 223.4 550.7 233.1C551.8 241.6 559.2 248.1 568.5 249.7C578.1 251.4 587.1 249.4 593.8 242.5C600.4 235.7 606.5 228.2 611.4 220.1C622.5 201.5 629.2 181.1 632.8 159.8C633 158.5 632.5 157.1 632.3 155.7C631.2 156.2 629.9 156.6 629 157.3C607.9 172.5 584.6 180.7 558.4 179.8C537.1 179.1 518.5 172.3 505.4 154.5C494.3 139.5 492.5 122.6 495.7 104.9C503.4 62 531.4 37.5 570.5 23.5C586.2 17.9 602.4 15.9 620.1 15.7ZM568.4 115.9C569.1 121.1 569.5 127.3 570.7 133.3C574.1 149.9 584.3 156.9 601 154.3C612.5 152.5 621.6 146.4 628.8 137.6C648.8 113.3 654.4 85.1 648.9 54.8C645.7 37 634.4 29.2 617.5 31.4C606.8 32.8 598.2 38.3 591.6 46.7C575.8 66.7 570.3 90.2 568.4 115.9Z' fill='%2332AA4C'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M462.5 223.1C456.6 253.3 427.4 270.4 399.5 260.5C383.6 254.8 374.3 238.9 377.4 222.2C384.8 182.6 392.2 143 399.7 103.4C400.4 99.8 399.4 98.4 395.8 98.9C394.2 99.1 392.6 99.3 391 99.3C389.7 99.3 388.4 98.8 387.1 98.5C387.8 97.1 388.1 95.3 389.2 94.4C392.5 91.7 395.9 89.1 399.5 86.8C411 79.5 419.6 69.3 428.1 58.8C440.6 43.6 453.9 29.3 472.3 20.9C479.7 17.6 487.1 15 495.2 15.6C496.4 15.7 497.6 16.2 498.8 16.5C498.1 18.2 497.9 20.8 496.7 21.5C474.3 34.3 469 56.7 464 79.3C463.4 81.8 464.9 81.5 466.3 81.6C472.9 81.6 479.6 81.7 486.2 81.6C489 81.5 489.4 82.5 488.9 85C488 89 487.1 93 486.5 97.1C486.1 99.7 484.9 100.4 482.4 100.4C476.1 100.2 469.7 100.5 463.4 100.3C460.5 100.2 459.6 101.4 459.1 103.9C452.9 136.2 446.7 168.6 440.4 200.9C439.6 204.9 438.4 208.9 437.4 212.9C434.5 223.7 442 227.7 450.8 226.2C454.6 225.5 458.3 224.3 462.5 223.1Z' fill='%23D21E20'/%3E%3Cpath d='M733 36L738.2 51.9C738.2 51.9 736.3 54.9 735.9 59.4L733.1 58.1C728.2 52 725.2 44.3 725.2 36C725.2 35.8 725.2 35.6 725.2 35.5L727 31.1C727 31.1 728.6 33.7 733 36Z' fill='white'/%3E%3Cpath d='M770.7 33.1L782.2 43.1C782.2 43.1 779.7 52.7 777.2 58C774.7 60.8 762.6 63 762.6 63C757.6 59.8 750.7 52.8 750.7 52.8L754.5 38.6C754.4 38.6 759.5 37.7 770.7 33.1Z' fill='white'/%3E%3Cpath d='M769.2 71.1C766.9 71.6 764.5 71.8 762 71.8C759.2 71.8 756.5 71.5 753.9 70.9C757.3 70.4 760.6 69.5 760.6 69.5L769.2 71.1Z' fill='white'/%3E%3Cpath d='M762.5 63L760.5 69.5C760.5 69.5 757.2 70.4 753.8 70.9C749.6 70 745.7 68.4 742.2 66.2L735.7 59.4C736.1 54.9 738 51.9 738 51.9L750.5 52.7C750.7 52.8 757.5 59.8 762.5 63Z' fill='white'/%3E%3Cpath d='M782.2 62.6C782.2 62.6 785.7 62.2 788.2 61C784.7 64.5 780.4 67.2 775.7 69.1L782.2 62.6Z' fill='white'/%3E%3Cpath d='M796.6 39.7L796.5 48.2C794.7 53 791.8 57.4 788.2 61C785.7 62.1 782.2 62.6 782.2 62.6L777.2 58C779.7 52.6 782.2 43.1 782.2 43.1L791 34.8L796.6 39.7Z' fill='white'/%3E%3Cpath d='M798.7 36V36.1L796.6 39.7L791 34.7L787.2 21.3V12L791 14C795.8 20.1 798.7 27.7 798.7 36Z' fill='white'/%3E%3Cpath d='M787.2 12.1V21.4C777.6 18.5 774.4 18.9 774.4 18.9L762 8.1L763.4 1.1C763.4 1.1 764.9 0.7 766.2 0.5C771.8 1.1 777 3 781.5 5.7L787.2 12.1Z' fill='white'/%3E%3Cpath d='M766.2 0.500012C764.8 0.700012 763.4 1.10001 763.4 1.10001L759.9 0.300012C760.6 0.300012 761.3 0.200012 762 0.200012C763.4 0.200012 764.8 0.300012 766.2 0.500012Z' fill='white'/%3E%3Cpath d='M774.3 18.9L770.6 33.1C759.5 37.7 754.4 38.6 754.4 38.6L743.2 28.8C743.2 28.8 744.4 17.6 746.6 13.4L762 8.10001L774.3 18.9Z' fill='white'/%3E%3Cpath d='M740.8 8.10001L746.6 13.4C744.4 17.6 743.2 28.8 743.2 28.8L733 36C728.6 33.7 727 31.1 727 31.1L727.9 22.5C728.7 20.6 729.6 18.9 730.7 17.2C734.3 12.9 740.8 8.10001 740.8 8.10001Z' fill='white'/%3E%3Cpath d='M743.2 5.20001L740.8 8.10001C740.8 8.10001 734.4 12.9 730.7 17.2C733.8 12.3 738.1 8.20001 743.2 5.20001Z' fill='white'/%3E%3Cpath d='M796.6 39.7L798.7 36.1C798.7 40.3 797.9 44.4 796.5 48.2L796.6 39.7Z' fill='%23010102'/%3E%3Cpath d='M787.2 21.4L791 34.8L782.2 43.1L770.7 33.1L774.4 18.9C774.3 18.9 777.6 18.5 787.2 21.4Z' fill='%23010102'/%3E%3Cpath d='M791 14L787.2 12.1L781.5 5.70001C785.1 7.90001 788.3 10.7 791 14Z' fill='%23010102'/%3E%3Cpath d='M782.2 62.6L775.8 69.1C774.5 69.6 773.1 70.1 771.7 70.5C770.9 70.7 770.1 70.9 769.3 71.1L760.7 69.6L762.7 63.1C762.7 63.1 774.8 60.9 777.3 58.1L782.2 62.6Z' fill='%23010102'/%3E%3Cpath d='M763.3 1.10002L761.9 8.10002L746.5 13.4L740.7 8.10002L743.1 5.20002C748 2.30002 753.7 0.600018 759.7 0.300018L763.3 1.10002Z' fill='%23010102'/%3E%3Cpath d='M754.4 38.6L750.7 52.8L738.2 51.9L733 36L743.2 28.9L754.4 38.6Z' fill='%23010102'/%3E%3Cpath d='M735.8 59.4L742.3 66.2C738.8 64 735.7 61.3 733.1 58.1L735.8 59.4Z' fill='%23010102'/%3E%3Cpath d='M727.9 22.5L727 31.1L725.2 35.5C725.3 30.9 726.2 26.5 727.9 22.5Z' fill='%23010102'/%3E%3Cpath d='M791 14C795.9 20.1 798.8 27.7 798.8 36V36.1C798.8 40.3 798 44.4 796.6 48.2C794.8 53 791.9 57.4 788.3 61C784.8 64.5 780.5 67.2 775.8 69.1C774.5 69.6 773.1 70.1 771.7 70.5C770.9 70.7 770.1 70.9 769.3 71.1C767 71.5 764.6 71.8 762.1 71.8C759.3 71.8 756.6 71.5 754 70.9C749.8 70 745.9 68.4 742.4 66.2C738.9 64 735.8 61.3 733.2 58.1C728.3 52 725.3 44.3 725.3 36C725.3 35.8 725.3 35.6 725.3 35.5C725.4 30.9 726.3 26.6 728 22.6C728.8 20.7 729.7 19 730.8 17.3C733.9 12.4 738.2 8.30002 743.3 5.40002C748.2 2.50002 753.9 0.800024 759.9 0.500024C760.6 0.500024 761.3 0.400024 762 0.400024C763.4 0.400024 764.8 0.500024 766.2 0.600024C771.8 1.20002 777 3.10002 781.5 5.80002C785.1 7.90002 788.3 10.7 791 14Z' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M759.8 0.300018L763.3 1.10002L762 8.10002L746.5 13.4L740.8 8.10002L743.2 5.20002' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M725.2 35.5L727 31.1L727.9 22.5' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M733 36L738.2 51.9L750.7 52.8L754.4 38.6L743.2 28.9L733 36Z' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M733.1 58.1L735.8 59.4L742.3 66.2' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M798.7 36.1L796.6 39.7L796.5 48.2' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M781.5 5.70001L787.2 12.1L791 14' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M769.2 71.1L760.6 69.6L762.6 63.1C762.6 63.1 774.7 60.9 777.2 58.1L782.2 62.7L775.8 69.2' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M787.2 21.4L791 34.8L782.2 43.1L770.7 33.1L774.3 18.9' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M762 8.10001L774.4 18.9C774.4 18.9 777.6 18.5 787.2 21.4V12.1' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M791 34.8L796.6 39.7' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M782.2 43.1C782.2 43.1 779.7 52.7 777.2 58' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M754.4 38.6C754.4 38.6 759.5 37.7 770.6 33.1' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M743.2 28.9C743.2 28.9 744.4 17.7 746.6 13.5' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M727 31.1C727 31.1 728.6 33.7 733 36' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M738.2 51.9C738.2 51.9 736.3 54.9 735.9 59.4' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M750.7 52.8C750.7 52.8 757.5 59.8 762.6 63' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M782.2 62.6C782.2 62.6 785.7 62.2 788.2 61' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M760.5 69.5C760.5 69.5 757.2 70.4 753.8 70.9' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M740.8 8.10001C740.8 8.10001 734.4 12.9 730.7 17.2' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3Cpath d='M763.3 1.10003C763.3 1.10003 764.8 0.700031 766.1 0.500031' stroke='black' stroke-width='0.2' stroke-miterlimit='10'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_22_197'%3E%3Crect width='962.5' height='309.4' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
+            background-size: 70%;
+            background-repeat: no-repeat;
+            background-position: center;
+            /* Back face starts facing the user */
+        }
+
+        .card .icon {
+            width: 50px;
+            height: 50px;
+            fill: #e2e8f0; /* Icon color */
+        }
+
+        /* Style the front face background based on correct/incorrect WHEN flipped */
+         .card.is-flipped.correct .card-front {
+            background-color: #38a169; /* Green */
+            border-color: #2f855a;
+        }
+        .card.is-flipped.incorrect .card-front {
+            background-color: #e53e3e; /* Red */
+            border-color: #c53030;
+        }
+
+        .card.shuffling {
+            cursor: default;
+        }
+
+        /* Button styles */
+        .btn { padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease, transform 0.1s ease; border: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        .btn:active { transform: scale(0.98); }
+        /* UPDATED: Branded button colors */
+        .btn-primary { background-color: #32AA4C; /* Bet9ja Green */ color: white; }
+        .btn-primary:hover { background-color: #27843a; /* Darker Green */ }
+        .btn-secondary { background-color: #4a5568; /* gray-700 */ color: #e2e8f0; /* gray-200 */ }
+        .btn-secondary:hover { background-color: #2d3748; /* gray-800 */ }
+        .btn:disabled { background-color: #4a5568; /* gray-700 */ cursor: not-allowed; opacity: 0.6; }
+
+        /* Message area styling */
+        .message-area { min-height: 2em; font-weight: 600; text-align: center; margin-top: 1rem; }
+        /* Message text colors adjusted in JS */
+
+        /* Shuffle positioning helpers */
+        .pos-0 { transform: translateX(-110%); }
+        .pos-1 { transform: translateX(0%); }
+        .pos-2 { transform: translateX(110%); }
+
+        /* Main container */
+        /* UPDATED: Dark background for main content */
+        .main-container {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            background-color: #2d3748; /* gray-800 */
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Adjusted shadow */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .card { width: 75px; height: 115px; }
+            .card-container { gap: 0.5rem; max-width: 300px; min-height: 120px; }
+             .pos-0 { transform: translateX(-108%); }
+             .pos-2 { transform: translateX(108%); }
+             .main-container { padding: 1rem; }
+             h1 { font-size: 1.5rem; }
+             .btn { padding: 0.6rem 1.2rem; }
+             /* Adjust logo size for smaller cards if needed */
+             .card-back { background-size: 65%; } /* Smaller logo on smaller cards */
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container text-center">
+        <svg class="mx-auto mb-4 h-12 w-auto" width="963" height="310" viewBox="0 0 963 310" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_22_197_header)">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M962.5 127.8C961 137.1 959.8 146.4 958.1 155.6C953.7 179 948.6 202.3 944.9 225.8C943.5 234.9 944.8 244.5 945.5 253.9C945.9 259.6 946.4 259.5 940.8 259.5C922.7 259.5 904.5 259.4 886.4 259.6C883 259.6 881.5 258.8 881.1 255.2C880 245.7 879.8 245.7 871.8 250.8C853.7 262.3 834.5 267.9 813 263.2C791.1 258.4 776.8 240.6 778.8 220C780.8 199.8 791.1 184.5 807.2 172.7C818.4 164.5 831 159.6 844.1 155.2C859.3 150.2 874.4 144.7 889.2 138.8C903.7 133 906.6 119.4 903.8 107C903 103.2 900.3 100.5 896.5 99.4C887.2 96.8 875.4 98.8 873 108.7C872.4 111.2 872.4 114 872.9 116.5C874.4 124.5 873.4 127.2 865.7 130.3C856.4 134 847.1 137.8 836.7 136.1C828.4 134.7 822.4 130.2 818.4 123C811.4 110.3 810 96.9 813 82.8C813.4 81.1 813.7 79.3 816 80.7C827.7 88 840.6 85.6 853 84.8C866.3 84 879.5 81.1 892.8 80C908.9 78.7 924.9 80.2 940.2 85.6C953.9 90.4 960.1 100.8 961.6 114.7C961.8 116.4 962.2 118.2 962.5 119.9C962.5 122.5 962.5 125.1 962.5 127.8ZM896.1 154.6C890.5 157 885.4 158.5 881.1 161.2C866.6 170.3 855.3 182.6 847 197.5C842.7 205.2 841.2 213.5 842.2 222.2C843.5 233.8 853.8 241.5 863.6 237.5C874.4 233.1 883.7 226.7 884.7 213.4C884.9 211.1 885.6 208.8 886 206.5C889.3 189.7 892.6 172.9 896.1 154.6Z" fill="#32AA4C"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M685.6 308.9C685.3 308.9 685.1 308.8 684.8 308.8C681.5 308.3 678.2 307.4 675 306.5C675 306.5 676.3 305.1 676.5 305C689.3 295.3 695.6 281.9 698.7 266.6C708 220.5 717.1 174.4 726.3 128.2C727.2 123.9 727.9 119.5 728.9 115.2C731.4 105.3 730.8 95.8 726.2 86.4C724 81.9 724.3 81.7 729.3 81.7C749.3 81.7 769.4 81.8 789.4 81.6C792.5 81.6 793.3 82.1 792.7 85.5C785.9 119.7 779.4 153.9 772.7 188.1C767.3 215.9 761.7 243.8 756.5 271.7C754.5 282.5 748.7 290.6 739.6 296.5C727.3 304.4 712.2 308.6 697.6 309.3C693.7 309.5 689.6 309.4 685.6 308.9Z" fill="#32AA4C"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M194.6 179.8C191.2 187.7 187.3 198.5 181.9 208.5C171.5 227.7 157.5 243.5 137.2 252.8C127.7 257.1 117.7 259.6 107.3 259.6C72.5 259.7 37.7 259.7 2.9 259.7C2 259.7 1.2 259.6 0 259.5C0.4 258.4 0.6 257.3 1.1 256.6C10.2 243 13.8 227.5 16.9 211.6C27.4 157.3 38.4 103.2 49.3 49C50.9 40.9 49.6 33.2 47.5 25.5C46.7 22.7 47.1 21.9 50.1 21.9C70.4 22 90.8 22 111.1 21.9C113.8 21.9 114.2 22.7 113.7 25.3C108.9 49.3 104.3 73.4 99.5 97.9C102.6 96 105.7 94 108.7 92.2C119.9 85.6 131.7 80 145 79.4C173 78.1 191.9 92.8 198.2 120.2C200.9 132 200.6 143.9 199.2 156.9C201.3 151.5 202.7 147 204.6 142.7C221.8 105.6 250.7 84.5 291.2 79.3C309.8 76.9 328 78 345.1 86.5C362.6 95.2 375.5 108 378.2 128.3C380 141.5 378.7 154.8 375.8 167.8C375.2 170.6 373.2 170.4 371.2 170.4C337.6 170.5 304 170.6 270.4 170.5C266.4 170.5 264.9 171.5 264.2 175.6C261.6 190.5 258.1 205.3 259.2 220.7C260.4 237.2 270.1 246.9 286.7 247.5C309.8 248.4 327 236.4 332.3 215.9C334.1 209 333.9 202.1 330.9 195.6C329.8 193.1 330.4 192 332.8 191.7C337.3 191.1 341.9 189.7 346.2 190.4C358.3 192.1 364.2 202.4 361.6 215.6C358.8 229.7 350.5 239.8 338.8 247.3C319.6 259.6 298.5 265 275.8 263.9C261.3 263.2 247 261.4 233.7 255.3C208.9 244.1 196 224.7 194.8 197.6C194.4 190.6 194.6 183.8 194.6 179.8ZM137.2 133.2C136 127.6 135.3 121.9 133.5 116.6C131.6 110.9 127 108.2 120.9 108.1C113.3 108 107.7 111.7 102.9 117C95.9 124.7 91.8 134 89.5 144C87 154.9 85 165.9 82.9 176.8C78.8 197.9 74.7 218.9 70.6 240C70.3 241.6 69.7 242.9 72.2 242.8C77 242.6 82.2 243.4 86.7 242.1C103.7 237.2 115.8 226.5 121.4 209.3C124.1 200.9 126 192.3 128 183.7C131.7 167.1 135.8 150.6 137.2 133.2ZM291.2 154.3C297.4 154.3 303.6 154.2 309.7 154.4C312.5 154.5 313.9 154 314.3 150.8C315 145.4 316.7 140.2 317.4 134.8C318.6 125.1 320.2 115.3 320.1 105.6C320.1 97.3 313.8 92.4 305.3 92.5C294.6 92.6 287.1 98.4 282.5 107.4C275.5 121.1 271.8 135.9 268.9 150.9C268.4 153.7 269.4 154.4 272.1 154.4C278.6 154.2 284.9 154.3 291.2 154.3Z" fill="#D21E20"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M620.1 15.7C642.5 16 665 20.6 683.9 36.1C703 51.8 713.7 72.2 715.7 96.9C719.5 142.8 697.4 214.4 634.9 248C612.8 259.8 589.2 264.6 564.3 264.3C545.7 264.1 527.6 261.3 510.4 254.1C504.5 251.6 498.7 248.4 493.7 244.4C480.3 233.6 479.7 215.7 491.7 202.7C509.5 183.6 545 184.1 562.4 203.7C565 206.7 565.6 208.4 561.8 211C554.3 216.2 549.5 223.4 550.7 233.1C551.8 241.6 559.2 248.1 568.5 249.7C578.1 251.4 587.1 249.4 593.8 242.5C600.4 235.7 606.5 228.2 611.4 220.1C622.5 201.5 629.2 181.1 632.8 159.8C633 158.5 632.5 157.1 632.3 155.7C631.2 156.2 629.9 156.6 629 157.3C607.9 172.5 584.6 180.7 558.4 179.8C537.1 179.1 518.5 172.3 505.4 154.5C494.3 139.5 492.5 122.6 495.7 104.9C503.4 62 531.4 37.5 570.5 23.5C586.2 17.9 602.4 15.9 620.1 15.7ZM568.4 115.9C569.1 121.1 569.5 127.3 570.7 133.3C574.1 149.9 584.3 156.9 601 154.3C612.5 152.5 621.6 146.4 628.8 137.6C648.8 113.3 654.4 85.1 648.9 54.8C645.7 37 634.4 29.2 617.5 31.4C606.8 32.8 598.2 38.3 591.6 46.7C575.8 66.7 570.3 90.2 568.4 115.9Z" fill="#32AA4C"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M462.5 223.1C456.6 253.3 427.4 270.4 399.5 260.5C383.6 254.8 374.3 238.9 377.4 222.2C384.8 182.6 392.2 143 399.7 103.4C400.4 99.8 399.4 98.4 395.8 98.9C394.2 99.1 392.6 99.3 391 99.3C389.7 99.3 388.4 98.8 387.1 98.5C387.8 97.1 388.1 95.3 389.2 94.4C392.5 91.7 395.9 89.1 399.5 86.8C411 79.5 419.6 69.3 428.1 58.8C440.6 43.6 453.9 29.3 472.3 20.9C479.7 17.6 487.1 15 495.2 15.6C496.4 15.7 497.6 16.2 498.8 16.5C498.1 18.2 497.9 20.8 496.7 21.5C474.3 34.3 469 56.7 464 79.3C463.4 81.8 464.9 81.5 466.3 81.6C472.9 81.6 479.6 81.7 486.2 81.6C489 81.5 489.4 82.5 488.9 85C488 89 487.1 93 486.5 97.1C486.1 99.7 484.9 100.4 482.4 100.4C476.1 100.2 469.7 100.5 463.4 100.3C460.5 100.2 459.6 101.4 459.1 103.9C452.9 136.2 446.7 168.6 440.4 200.9C439.6 204.9 438.4 208.9 437.4 212.9C434.5 223.7 442 227.7 450.8 226.2C454.6 225.5 458.3 224.3 462.5 223.1Z" fill="#D21E20"/>
+            <path d="M733 36L738.2 51.9C738.2 51.9 736.3 54.9 735.9 59.4L733.1 58.1C728.2 52 725.2 44.3 725.2 36C725.2 35.8 725.2 35.6 725.2 35.5L727 31.1C727 31.1 728.6 33.7 733 36Z" fill="white"/>
+            <path d="M770.7 33.1L782.2 43.1C782.2 43.1 779.7 52.7 777.2 58C774.7 60.8 762.6 63 762.6 63C757.6 59.8 750.7 52.8 750.7 52.8L754.5 38.6C754.4 38.6 759.5 37.7 770.7 33.1Z" fill="white"/>
+            <path d="M769.2 71.1C766.9 71.6 764.5 71.8 762 71.8C759.2 71.8 756.5 71.5 753.9 70.9C757.3 70.4 760.6 69.5 760.6 69.5L769.2 71.1Z" fill="white"/>
+            <path d="M762.5 63L760.5 69.5C760.5 69.5 757.2 70.4 753.8 70.9C749.6 70 745.7 68.4 742.2 66.2L735.7 59.4C736.1 54.9 738 51.9 738 51.9L750.5 52.7C750.7 52.8 757.5 59.8 762.5 63Z" fill="white"/>
+            <path d="M782.2 62.6C782.2 62.6 785.7 62.2 788.2 61C784.7 64.5 780.4 67.2 775.7 69.1L782.2 62.6Z" fill="white"/>
+            <path d="M796.6 39.7L796.5 48.2C794.7 53 791.8 57.4 788.2 61C785.7 62.1 782.2 62.6 782.2 62.6L777.2 58C779.7 52.6 782.2 43.1 782.2 43.1L791 34.8L796.6 39.7Z" fill="white"/>
+            <path d="M798.7 36V36.1L796.6 39.7L791 34.7L787.2 21.3V12L791 14C795.8 20.1 798.7 27.7 798.7 36Z" fill="white"/>
+            <path d="M787.2 12.1V21.4C777.6 18.5 774.4 18.9 774.4 18.9L762 8.1L763.4 1.1C763.4 1.1 764.9 0.7 766.2 0.5C771.8 1.1 777 3 781.5 5.7L787.2 12.1Z" fill="white"/>
+            <path d="M766.2 0.500012C764.8 0.700012 763.4 1.10001 763.4 1.10001L759.9 0.300012C760.6 0.300012 761.3 0.200012 762 0.200012C763.4 0.200012 764.8 0.300012 766.2 0.500012Z" fill="white"/>
+            <path d="M774.3 18.9L770.6 33.1C759.5 37.7 754.4 38.6 754.4 38.6L743.2 28.8C743.2 28.8 744.4 17.6 746.6 13.4L762 8.10001L774.3 18.9Z" fill="white"/>
+            <path d="M740.8 8.10001L746.6 13.4C744.4 17.6 743.2 28.8 743.2 28.8L733 36C728.6 33.7 727 31.1 727 31.1L727.9 22.5C728.7 20.6 729.6 18.9 730.7 17.2C734.3 12.9 740.8 8.10001 740.8 8.10001Z" fill="white"/>
+            <path d="M743.2 5.20001L740.8 8.10001C740.8 8.10001 734.4 12.9 730.7 17.2C733.8 12.3 738.1 8.20001 743.2 5.20001Z" fill="white"/>
+            <path d="M796.6 39.7L798.7 36.1C798.7 40.3 797.9 44.4 796.5 48.2L796.6 39.7Z" fill="#010102"/>
+            <path d="M787.2 21.4L791 34.8L782.2 43.1L770.7 33.1L774.4 18.9C774.3 18.9 777.6 18.5 787.2 21.4Z" fill="#010102"/>
+            <path d="M791 14L787.2 12.1L781.5 5.70001C785.1 7.90001 788.3 10.7 791 14Z" fill="#010102"/>
+            <path d="M782.2 62.6L775.8 69.1C774.5 69.6 773.1 70.1 771.7 70.5C770.9 70.7 770.1 70.9 769.3 71.1L760.7 69.6L762.7 63.1C762.7 63.1 774.8 60.9 777.3 58.1L782.2 62.6Z" fill="#010102"/>
+            <path d="M763.3 1.10002L761.9 8.10002L746.5 13.4L740.7 8.10002L743.1 5.20002C748 2.30002 753.7 0.600018 759.7 0.300018L763.3 1.10002Z" fill="#010102"/>
+            <path d="M754.4 38.6L750.7 52.8L738.2 51.9L733 36L743.2 28.9L754.4 38.6Z" fill="#010102"/>
+            <path d="M735.8 59.4L742.3 66.2C738.8 64 735.7 61.3 733.1 58.1L735.8 59.4Z" fill="#010102"/>
+            <path d="M727.9 22.5L727 31.1L725.2 35.5C725.3 30.9 726.2 26.5 727.9 22.5Z" fill="#010102"/>
+            <path d="M791 14C795.9 20.1 798.8 27.7 798.8 36V36.1C798.8 40.3 798 44.4 796.6 48.2C794.8 53 791.9 57.4 788.3 61C784.8 64.5 780.5 67.2 775.8 69.1C774.5 69.6 773.1 70.1 771.7 70.5C770.9 70.7 770.1 70.9 769.3 71.1C767 71.5 764.6 71.8 762.1 71.8C759.3 71.8 756.6 71.5 754 70.9C749.8 70 745.9 68.4 742.4 66.2C738.9 64 735.8 61.3 733.2 58.1C728.3 52 725.3 44.3 725.3 36C725.3 35.8 725.3 35.6 725.3 35.5C725.4 30.9 726.3 26.6 728 22.6C728.8 20.7 729.7 19 730.8 17.3C733.9 12.4 738.2 8.30002 743.3 5.40002C748.2 2.50002 753.9 0.800024 759.9 0.500024C760.6 0.500024 761.3 0.400024 762 0.400024C763.4 0.400024 764.8 0.500024 766.2 0.600024C771.8 1.20002 777 3.10002 781.5 5.80002C785.1 7.90002 788.3 10.7 791 14Z" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M759.8 0.300018L763.3 1.10002L762 8.10002L746.5 13.4L740.8 8.10002L743.2 5.20002" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M725.2 35.5L727 31.1L727.9 22.5" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M733 36L738.2 51.9L750.7 52.8L754.4 38.6L743.2 28.9L733 36Z" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M733.1 58.1L735.8 59.4L742.3 66.2" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M798.7 36.1L796.6 39.7L796.5 48.2" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M781.5 5.70001L787.2 12.1L791 14" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M769.2 71.1L760.6 69.6L762.6 63.1C762.6 63.1 774.7 60.9 777.2 58.1L782.2 62.7L775.8 69.2" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M787.2 21.4L791 34.8L782.2 43.1L770.7 33.1L774.3 18.9" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M762 8.10001L774.4 18.9C774.4 18.9 777.6 18.5 787.2 21.4V12.1" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M791 34.8L796.6 39.7" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M782.2 43.1C782.2 43.1 779.7 52.7 777.2 58" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M754.4 38.6C754.4 38.6 759.5 37.7 770.6 33.1" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M743.2 28.9C743.2 28.9 744.4 17.7 746.6 13.5" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M727 31.1C727 31.1 728.6 33.7 733 36" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M738.2 51.9C738.2 51.9 736.3 54.9 735.9 59.4" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M750.7 52.8C750.7 52.8 757.5 59.8 762.6 63" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M782.2 62.6C782.2 62.6 785.7 62.2 788.2 61" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M760.5 69.5C760.5 69.5 757.2 70.4 753.8 70.9" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M740.8 8.10001C740.8 8.10001 734.4 12.9 730.7 17.2" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            <path d="M763.3 1.10003C763.3 1.10003 764.8 0.700031 766.1 0.500031" stroke="black" stroke-width="0.2" stroke-miterlimit="10"/>
+            </g>
+            <defs>
+            <clipPath id="clip0_22_197_header"> <rect width="962.5" height="309.4" fill="white"/>
+            </clipPath>
+            </defs>
+        </svg>
+
+        <h1 class="text-2xl md:text-3xl font-bold mb-3 text-gray-100">Site Maintenance In Progress</h1>
+        <p class="text-gray-300 mb-6">We're performing essential updates to improve your experience. The site will be back online shortly.</p>
+        <p class="text-gray-300 mb-6">Why not play a quick game while you wait?</p>
+
+        <div class="game-area bg-gray-800 p-4 md:p-6 rounded-lg shadow-inner">
+            <h2 class="text-xl font-semibold mb-4 text-gray-100">Find the Ball!</h2>
+
+            <div class="flex justify-around mb-4 text-lg text-gray-200">
+                <div>Current Streak: <span id="current-score" class="font-bold text-green-500">0</span></div>
+                <div>Top Score: <span id="top-score" class="font-bold text-white">0</span></div>
+            </div>
+
+            <div id="card-container" class="card-container">
+                </div>
+
+            <div id="message-area" class="message-area">
+                 <span class="message-info">Click "Start Game" to begin!</span>
+            </div>
+
+            <div class="mt-6">
+                <button id="start-button" class="btn btn-primary" data-action="start">Start Game</button>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <p class="text-gray-400 mb-4">Click the button below to check if the main site is back online.</p>
+            <button onclick="window.location.href='https://bet9ja.com';" class="btn btn-secondary">
+                Refresh & Check Site Status
+            </button>
+        </div>
+
+         <p class="text-xs text-gray-500 mt-6">© Bet9ja. All rights reserved.</p>
+    </div>
+
+    <svg width="0" height="0" style="position:absolute">
+      <symbol id="icon-ball" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="#f6e05e"/>
+        <path d="M 50,5 A 45,45 0 0 1 95,50" fill="none" stroke="#f6ad55" stroke-width="5"/>
+      </symbol>
+      <symbol id="icon-empty" viewBox="0 0 100 100">
+         <line x1="20" y1="20" x2="80" y2="80" stroke="#a0aec0" stroke-width="8"/>
+         <line x1="20" y1="80" x2="80" y2="20" stroke="#a0aec0" stroke-width="8"/>
+      </symbol>
+    </svg>
+
+    <script>
+        // --- DOM Elements ---
+        const cardContainer = document.getElementById('card-container');
+        const startButton = document.getElementById('start-button');
+        const currentScoreDisplay = document.getElementById('current-score');
+        const topScoreDisplay = document.getElementById('top-score');
+        const messageArea = document.getElementById('message-area');
+
+        // --- Game State ---
+        let cards = [];
+        let currentScore = 0;
+        let topScore = localStorage.getItem('bet9jaMaintenanceTopScore') || 0;
+        let ballPosition = -1; // Remains the same during 'continue'
+        let isShuffling = false;
+        let canPick = false;
+        const numCards = 3;
+        let shuffleSpeed = 1000;
+        let shuffleSteps = 5;
+        let cardPositions = [];
+        let resizeTimeout;
+        const FLIP_DURATION = 600; // ms, should match CSS transition
+
+        // --- Initialization ---
+        function initGame() {
+            topScoreDisplay.textContent = topScore;
+            currentScoreDisplay.textContent = currentScore;
+            createCards();
+            // Add listener to the start/continue button
+            startButton.addEventListener('click', handleStartButtonClick);
+            cardContainer.addEventListener('click', handleCardClick);
+            window.addEventListener('resize', handleResize);
+        }
+
+        // --- Create Card Elements ---
+        function createCards() {
+            cardContainer.innerHTML = '';
+            cards = [];
+            cardPositions = [];
+            for (let i = 0; i < numCards; i++) {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.index = i;
+
+                const cardInner = document.createElement('div');
+                cardInner.classList.add('card-inner');
+
+                const cardFront = document.createElement('div');
+                cardFront.classList.add('card-face', 'card-front');
+                const mainIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                mainIcon.classList.add('icon');
+                const mainIconUse = document.createElementNS("http://www.w3.org/2000/svg", "use");
+                mainIconUse.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#icon-empty");
+                mainIcon.appendChild(mainIconUse);
+                cardFront.appendChild(mainIcon);
+
+                const cardBack = document.createElement('div');
+                cardBack.classList.add('card-face', 'card-back');
+                // Logo is applied via CSS
+
+                cardInner.appendChild(cardFront);
+                cardInner.appendChild(cardBack);
+                card.appendChild(cardInner);
+
+                card.classList.add(`pos-${i}`);
+                cardPositions.push(i);
+                cardContainer.appendChild(card);
+                cards.push(card);
+            }
+        }
+
+        // --- Handle Start/Continue Button Click ---
+        function handleStartButtonClick() {
+            if (isShuffling) return; // Prevent clicks during shuffle
+
+            const action = startButton.dataset.action || 'start';
+
+            // Disable button immediately and set state
+            startButton.disabled = true;
+            isShuffling = true; // Enter shuffling state
+            canPick = false;
+
+            if (action === 'continue') {
+                // --- Continue Sequence ---
+                startButton.textContent = 'Shuffling...';
+                setMessage('Shuffling...', 'info');
+                resetCardsVisuals(); // Flip revealed cards back face-down
+
+                // Wait for flip animation to finish before shuffling
+                setTimeout(() => {
+                    if (!isShuffling) return; // Check if state changed (e.g., reset)
+                    shuffleCards();
+                }, FLIP_DURATION + 50); // Add a small buffer
+
+            } else {
+                // --- Start New Game Sequence ---
+                startButton.textContent = 'Shuffling...'; // Update text
+                startNewGameSequence();
+            }
+        }
+
+        // --- Start New Game Sequence (Full Reset) ---
+        function startNewGameSequence() {
+            setMessage('Watch closely!', 'info');
+            // Reset icons ONLY when starting a new game sequence
+            resetCardIcons();
+            resetCardsVisuals(); // Ensure all cards are face down
+            resetCardPositions(); // Put cards in starting positions
+            ballPosition = Math.floor(Math.random() * numCards); // Pick new ball location
+
+            // Reveal the new ball position briefly, then shuffle
+            revealCardTemporarily(ballPosition, 800)
+                .then(() => {
+                    // This runs after the card flips back down
+                    if (!isShuffling) return; // Check state again
+                    shuffleCards();
+                });
+        }
+
+
+        // --- Reveal a card temporarily, then hide it (using flip) ---
+        function revealCardTemporarily(index, duration) {
+            // Returns a promise that resolves *after* the card is hidden again
+            return new Promise(resolve => {
+                const cardElement = cards[index];
+                if (!cardElement) { console.error("Cannot find card element for index:", index); resolve(); return; }
+                const frontFace = cardElement.querySelector('.card-front');
+                const mainIconUse = frontFace?.querySelector('.icon use');
+                if (!mainIconUse) { console.error("Cannot find icon <use> element for card:", index); resolve(); return; }
+
+                // Set icon to ball on the (currently hidden) front face
+                mainIconUse.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#icon-ball");
+                // Add classes to trigger flip and style front face as 'correct'
+                cardElement.classList.add('is-flipped', 'correct');
+
+                // Wait while revealed
+                setTimeout(() => {
+                    // Remove classes to flip back and remove 'correct' style
+                    cardElement.classList.remove('is-flipped', 'correct');
+                    // Wait for flip-back animation before resolving (icon reset is handled by startNewGameSequence)
+                    setTimeout(() => {
+                         resolve(); // Resolve after flip back
+                    }, FLIP_DURATION); // Match flip transition duration
+                }, duration);
+            });
+        }
+
+        // --- Shuffle Cards Animation ---
+        async function shuffleCards() {
+            // Assumes cards are already face down and isShuffling is true
+            setMessage('Shuffling...', 'info'); // Ensure message is correct
+            cards.forEach(card => card.classList.add('shuffling')); // Add class for cursor style etc.
+
+            // Determine shuffle complexity based on score
+            shuffleSpeed = Math.max(200, 800 - currentScore * 50);
+            shuffleSteps = 5 + Math.floor(currentScore / 2);
+
+            // --- Shuffle Loop ---
+            for (let i = 0; i < shuffleSteps; i++) {
+                // Choose two distinct VISUAL positions to swap
+                let visualPos1 = Math.floor(Math.random() * numCards);
+                let visualPos2 = Math.floor(Math.random() * numCards);
+                while (visualPos1 === visualPos2) {
+                    visualPos2 = Math.floor(Math.random() * numCards);
+                }
+                // Find card elements currently at these visual positions
+                const cardIndex1 = cardPositions.findIndex(pos => pos === visualPos1);
+                const cardIndex2 = cardPositions.findIndex(pos => pos === visualPos2);
+                if (cardIndex1 === -1 || cardIndex2 === -1) { console.error("Error finding cards for swap:", visualPos1, visualPos2, cardPositions); continue; }
+                const cardElement1 = cards[cardIndex1];
+                const cardElement2 = cards[cardIndex2];
+
+                // Swap their visual position classes (for translation)
+                cardElement1.classList.remove(`pos-${visualPos1}`);
+                cardElement1.classList.add(`pos-${visualPos2}`);
+                cardElement2.classList.remove(`pos-${visualPos2}`);
+                cardElement2.classList.add(`pos-${visualPos1}`);
+
+                // Update the tracking array
+                cardPositions[cardIndex1] = visualPos2;
+                cardPositions[cardIndex2] = visualPos1;
+
+                // Wait for the translation transition
+                await new Promise(resolve => setTimeout(resolve, shuffleSpeed));
+            }
+            // --- End Shuffle Loop ---
+
+            // Shuffle complete
+            isShuffling = false; // Exit shuffling state
+            canPick = true; // Allow user to pick now
+            cards.forEach(card => card.classList.remove('shuffling')); // Remove shuffling class
+            startButton.disabled = true; // Keep button disabled until guess is made
+            startButton.textContent = 'Find the Ball!'; // Reset button text
+            setMessage('Where is the ball?', 'info'); // Prompt user
+        }
+
+        // --- Handle Card Click Event ---
+        function handleCardClick(event) {
+            if (isShuffling || !canPick) return; // Ignore clicks during shuffle or before ready
+            const clickedCard = event.target.closest('.card');
+            if (!clickedCard) return; // Ignore clicks not on a card
+
+            canPick = false; // Disable picking immediately
+            const clickedOriginalIndex = parseInt(clickedCard.dataset.index, 10);
+
+            // Reveal all cards and apply correct/incorrect styling to the clicked one
+            revealAllCards(clickedOriginalIndex);
+
+            // Check result
+            if (clickedOriginalIndex === ballPosition) {
+                // --- Correct Guess ---
+                currentScore++;
+                setMessage(`Correct! Streak: ${currentScore}`, 'success');
+                if (currentScore > topScore) {
+                    topScore = currentScore;
+                    localStorage.setItem('bet9jaMaintenanceTopScore', topScore);
+                    topScoreDisplay.textContent = topScore;
+                }
+                currentScoreDisplay.textContent = currentScore;
+                // Set button for continuation
+                startButton.textContent = 'Shuffle Again!';
+                startButton.dataset.action = 'continue';
+                startButton.disabled = false; // Enable button
+
+            } else {
+                // --- Incorrect Guess ---
+                const correctCardVisualPos = cardPositions[ballPosition];
+                setMessage(`Wrong! The ball was under card #${correctCardVisualPos + 1}. Streak reset.`, 'error');
+                currentScore = 0; // Reset streak
+                currentScoreDisplay.textContent = currentScore;
+                // Set button for starting a new game
+                startButton.textContent = 'Start New Game';
+                startButton.dataset.action = 'start';
+                startButton.disabled = false; // Enable button
+            }
+        }
+
+        // --- Reveal All Cards After Guess (using flip) ---
+        function revealAllCards(clickedOriginalIndex) {
+            cards.forEach((card, originalIndex) => {
+                const frontFace = card.querySelector('.card-front');
+                const mainIconUse = frontFace?.querySelector('.icon use');
+                 if (!mainIconUse) { console.error("Cannot find icon <use> for reveal:", originalIndex); return; }
+
+                // Set correct icon on front face (ball or empty)
+                if (originalIndex === ballPosition) {
+                    mainIconUse.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#icon-ball");
+                    // Add 'correct' class ONLY if this card was the one clicked
+                    if (originalIndex === clickedOriginalIndex) card.classList.add('correct');
+                } else {
+                     mainIconUse.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#icon-empty");
+                     // Add 'incorrect' class ONLY if this card was the one clicked
+                    if (originalIndex === clickedOriginalIndex) card.classList.add('incorrect');
+                }
+                 // Add 'is-flipped' class to trigger the flip animation for all cards
+                 card.classList.add('is-flipped');
+            });
+        }
+
+        // --- Reset Card Visuals (Flip State & Correct/Incorrect classes ONLY) ---
+        function resetCardsVisuals() {
+            cards.forEach(card => {
+                // Remove state classes from the outer card element
+                // This will trigger the flip-back animation if the card was flipped
+                card.classList.remove('is-flipped', 'correct', 'incorrect');
+            });
+        }
+
+         // --- NEW: Reset Card Icons (Only called when starting a new game) ---
+         function resetCardIcons() {
+            cards.forEach(card => {
+                // Reset the icon on the front face to empty
+                const frontFace = card.querySelector('.card-front');
+                const mainIconUse = frontFace?.querySelector('.icon use');
+                 if (mainIconUse) {
+                    mainIconUse.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#icon-empty");
+                 }
+            });
+        }
+
+
+        // --- Reset Card Positions to Start ---
+        function resetCardPositions() {
+             cardPositions = cards.map((_, i) => i); // Reset logical mapping [0, 1, 2]
+             cards.forEach((card, index) => {
+                 // Apply position class to the outer card for translation
+                 card.classList.remove('pos-0', 'pos-1', 'pos-2');
+                 card.classList.add(`pos-${index}`);
+             });
+        }
+
+        // --- Handle Window Resize ---
+        function handleResize() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                // Only reposition if NOT shuffling and cards exist
+                if (isShuffling || cards.length === 0) return;
+                cards.forEach((card, index) => {
+                    if (index < cardPositions.length) {
+                       const currentVisualPosition = cardPositions[index];
+                       card.classList.remove('pos-0', 'pos-1', 'pos-2');
+                       card.classList.add(`pos-${currentVisualPosition}`);
+                    } else {
+                        console.warn("Resize handler: index out of bounds for cardPositions", index, cardPositions.length);
+                    }
+                });
+            }, 100);
+        }
+
+        // --- Set Message Function ---
+        function setMessage(text, type = 'info') {
+            messageArea.textContent = text;
+            messageArea.className = 'message-area'; // Reset classes first
+            // UPDATED: Text colors for dark theme
+            if (type === 'success') messageArea.classList.add('text-green-400'); // Lighter green
+            else if (type === 'error') messageArea.classList.add('text-red-400'); // Lighter red
+            else messageArea.classList.add('text-gray-400'); // Lighter gray
+        }
+
+        // --- Run Initialization on Load ---
+        document.addEventListener('DOMContentLoaded', initGame);
+
+    </script>
+</body>
+</html>
